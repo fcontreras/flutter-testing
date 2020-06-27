@@ -1,4 +1,5 @@
 import 'package:bloc/bloc.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:testing_example/modelos/detalle_de_orden.dart';
 import 'package:testing_example/modelos/producto.dart';
 
@@ -27,14 +28,15 @@ class CalculadorDeProductosBloc extends Bloc<EventoDeCalculadorDeProductos, Esta
   }
 
   Stream<EstadoDeCalculadorDeProductos> _hacerCalculos() async* {
-    var subTotal = _calcularSubTotal(state.detallesDeOrden);
+    var subTotal = calcularSubTotal(state.detallesDeOrden);
     var impuestos = _calcularImpuestos(subTotal);
     var granTotal = _calcularTotal(subTotal, impuestos);
 
     yield CalculosCompletados(this.state.detallesDeOrden, subTotal, impuestos, granTotal);
   }
 
-  double _calcularSubTotal(List<DetalleDeOrden> detallesDeOrden) {
+  @visibleForTesting
+  double calcularSubTotal(List<DetalleDeOrden> detallesDeOrden) {
     var subTotal = 0.0;
     detallesDeOrden.forEach((element) => subTotal += element.producto.precio * element.cantidad);
 
